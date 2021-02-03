@@ -451,22 +451,48 @@ mod unsafe_impls {
         );
 
         out.clear();
-        out.reserve_exact(vec.len());
+        out.reserve_exact(inv.0.len());
 
         //------------------------------------------------
         // You are now entering a PANIC FREE ZONE
 
-        // Make a bunch of uninitialized elements indexable.
-        unsafe { out.set_len(vec.len()); }
+        { // scope ptrs so we can reason about them
+            let vec_ptr = vec.as_ptr();
+            let out_ptr = out.as_mut_ptr();
 
-        // a perm holds indices into the data vec, so the inverse holds indices into `out`.
-        for (vec_i, &out_i) in inv.0.iter().enumerate() {
-            let tmp = unsafe { ptr::read(&vec[vec_i]) };
-            unsafe { ptr::write(&mut out[out_i], tmp) };
+            // a perm holds indices into the data vec, so the inverse holds indices into `out`.
+            for (vec_i, &out_i) in inv.0.iter().enumerate() {
+                // SAFETY:
+                //
+                //  * vec_i < vec.len() because:
+                //    * vec_i comes from the standard library implementation of `impl Iterator for std::iter::Enumerate`,
+                //      and is thus guaranteed to be `< inv.0.len()`.
+                //    * We asserted earlier that `inv.0.len() == vec.len()`.
+                //
+                //  * vec[vec_i] will not be double-dropped, because:
+                //    * we perform `vec.set_len(0)` after this loop.
+                //    * we cannot possibly panic before this occurs.
+                let value = unsafe { vec_ptr.offset(vec_i as isize).read() };
+
+                // SAFETY:
+                //
+                //  * out_i < out.capacity() because:
+                //    * A privacy-protected invariant of PermVec guarantees that `out_i < inv.0.len()`.
+                //    * We called `Vec::reserve_exact` to ensure that `inv.0.len() <= out.capacity()`.
+                let dest_ptr = unsafe { out_ptr.offset(out_i as isize) };
+                unsafe { dest_ptr.write(value) };
+            }
         }
 
         // Don't drop the original items, but do allow the original
         // vec to fall out of scope so the memory can be freed.
+
+        // SAFETY:
+        //
+        // * All elements in out[0..vec.len()] are initialized because:
+        //   * A privacy-protected invariant of PermVec guarantees that, in the above `for` loop,
+        //     every index from 0..vec.len() will have appeared exactly once as `out_i`.
+        unsafe { out.set_len(vec.len()); }
         unsafe { vec.set_len(0); }
 
         // Thank you for flying with us. You may now PANIC!
