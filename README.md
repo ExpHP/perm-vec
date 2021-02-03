@@ -1,5 +1,10 @@
 # `perm-vec`
 
+[![Crates.io](https://img.shields.io/crates/v/perm-vec)](https://crates.io/crates/perm-vec)
+[![docs.rs](https://img.shields.io/docsrs/perm-vec)](https://docs.rs/perm-vec)
+[![Build Status](https://travis-ci.org/ExpHP/perm-vec.svg?branch=main)](https://travis-ci.org/ExpHP/perm-vec)
+
+
 Provides a `Perm` type for permuting vectors of data.
 
 ```toml
@@ -7,7 +12,7 @@ Provides a `Perm` type for permuting vectors of data.
 perm-vec = "0.1"
 ```
 
-It is a very common practice in programming to work with arrays holding reordered indices of something.  (e.g. the indices into an array that sort it by some field, or that change it to match some different ordering convention).  However, this is usually done in an entirely ad-hoc manner, which is unfortunate because not only can these indices be difficult to reason about sometimes, but they also have a great deal of frequently-overlooked mathematical properties that can make reasoning about them so much easier.
+It is a very common practice in programming to work with arrays holding reordered indices of something.  (e.g. the indices into an array that sort it by some field, or that change it to match some different ordering convention).  While this is often done in an entirely ad-hoc manner, these indices actually satisfy a great deal of frequently-overlooked mathematical properties that can make reasoning about them much much easier.
 
 `Perm` is a type which implements many of these properties.
 
@@ -30,6 +35,8 @@ fn main() {
     assert_eq!(vec![0, 10, 20, 30].permuted_by(&perm_comp_2), vec![20, 10, 0, 30]);
 }
 ```
+
+<!-- TODO: examples and links -->
 
 Various methods are provided for calculating things like:
 
