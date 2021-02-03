@@ -44,3 +44,9 @@ Various methods are provided for calculating things like:
 * Integer powers of a permutation.
 * Direct sums.
 * Direct products.
+
+## License
+
+Licensed under the Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0 or the MIT license http://opensource.org/licenses/MIT, at your option. This file may not be copied, modified, or distributed except according to those terms.
+
+## [Changelog](CHANGELOG.md)
