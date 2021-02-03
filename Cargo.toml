@@ -1,0 +1,16 @@
+[package]
+name = "perm-vec"
+version = "0.1.0"
+authors = ["Michael Lamparski <diagonaldevice@gmail.com>"]
+license = "MIT OR Apache 2.0"
+edition = "2018"
+
+[lib]
+path = "lib.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# FIXME: I'd like to make this one optional, but the unit tests require it.
+#        Try again after https://github.com/rust-lang/cargo/issues/5565
+rand = "0.3"
