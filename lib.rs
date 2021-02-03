@@ -443,8 +443,6 @@ mod unsafe_impls {
     }
 
     pub(super) fn inv_permute_to_mut_vec<T>(mut vec: Vec<T>, inv: &PermVec, out: &mut Vec<T>) {
-        use std::ptr;
-
         assert_eq!(
             vec.len(), inv.0.len(),
             "Incorrect permutation length",
@@ -786,4 +784,28 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    /// ```rust
+    /// // IMPORTANT:  If you modify this test, UPDATE THE README!!!
+    ///
+    /// use perm_vec::{Perm, Permute};
+    ///
+    /// fn main() {
+    ///     // The vec that permutes "abcd" into "bcda".
+    ///     let perm_shl = Perm::from_vec(vec![1, 2, 3, 0]).unwrap();
+    ///     assert_eq!(vec![0, 10, 20, 30].permuted_by(&perm_shl), vec![10, 20, 30, 0]);
+    ///
+    ///     // The permutation that reverses a vector
+    ///     let perm_rev = Perm::from_vec((0..4).rev().collect()).unwrap();
+    ///     assert_eq!(vec![0, 10, 20, 30].permuted_by(&perm_rev), vec![30, 20, 10, 0]);
+    ///
+    ///     // Let's compose them!
+    ///     let perm_comp_1 = perm_shl.then(&perm_rev);  // this one shifts, then reverses
+    ///     let perm_comp_2 = perm_rev.then(&perm_shl);  // this one reverses, then shifts
+    ///     assert_eq!(vec![0, 10, 20, 30].permuted_by(&perm_comp_1), vec![0, 30, 20, 10]);
+    ///     assert_eq!(vec![0, 10, 20, 30].permuted_by(&perm_comp_2), vec![20, 10, 0, 30]);
+    /// }
+    /// ```
+    fn _readme_doctest() {}
 }
